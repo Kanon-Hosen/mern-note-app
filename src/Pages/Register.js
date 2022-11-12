@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, FacebookAuthProvider, GoogleAuthProvider, signInWithPopup, updateProfile } from 'firebase/auth';
-import React from 'react';
+import React, { useState } from 'react';
 import { BsFacebook, BsGoogle } from 'react-icons/bs';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../config/firebaseConfig';
@@ -7,7 +7,10 @@ import RegisterImg from '../image/Prototyping process-pana.png'
 
 const Register = () => {
     const navigate = useNavigate();
+  const [loader, setLoader] = useState(false);
+  const [error, setError] = useState(false);
     const handleRegister = (e) => {
+        setLoader(true)
         e.preventDefault();
         const name = e.target.username.value;
         const email = e.target.email.value;
@@ -15,18 +18,19 @@ const Register = () => {
 
         createUserWithEmailAndPassword(auth, email, password)
             .then(user => {
-                console.log(user);
                 e.target.reset();
                 updateProfile(auth.currentUser, {
                     displayName: name
                 }).then(() => {
                     navigate('/');
+                    setLoader(false)
                 })
-                .catch(err=>console.log(err.message))
+                .catch(err=>setError(err.message))
         })
             .catch(err => {
-                console.log(err.message);
+                setError(err.message);
                 e.target.reset();
+                setLoader(false)
             })
     }
 
@@ -42,7 +46,18 @@ const Register = () => {
         await signInWithPopup(auth, provider);
     }
     return (
-        <div className='flex flex-col md:flex-row items-center justify-between w-4/5 h-full md:h-full mx-auto shadow-lg p-5 gap-4 md:gap-0'>
+        <div className='flex flex-col md:flex-row items-center justify-between w-full px-10 md:px-32 h-full md:h-full mx-auto shadow-lg p-5 gap-4 md:gap-0 relative'>
+                  {
+        loader ? <div className="w-full h-full z-40 bg-black bg-opacity-20 absolute top-0 left-0 flex items-center justify-center">
+        <div>
+          <div className="flex items-center z-50 justify-center space-x-2">
+            <div className="w-4 h-4 rounded-full animate-pulse bg-teal-500"></div>
+            <div className="w-4 h-4 rounded-full animate-pulse bg-teal-500"></div>
+            <div className="w-4 h-4 rounded-full animate-pulse bg-teal-500"></div>
+          </div>
+        </div>
+      </div>  : ''
+      }
             <div className='w-full md:w-1/2'>
                 <img src={RegisterImg} alt="" />
             </div>
@@ -55,7 +70,8 @@ const Register = () => {
                     <label htmlFor="Email">Email</label>
                     <input name='email' className='border p-3 border-gray-500 rounded mb-2' type="email" required placeholder='Enter your email' />
                     <label htmlFor="password">Password</label>
-                    <input name='password' className='border p-3 border-gray-500 rounded mb-5' type="password"required placeholder='Enter your password' />
+                        <input name='password' className='border p-3 border-gray-500 rounded mb-5' type="password" required placeholder='Enter your password' />
+                        <p className='font-semibold text-red-500 text-sm'>{error}</p>
                     <button type="submit" className='btn bg-teal-500 border-none p-3 rounded text-white'>Register</button>
                 </form>
                 <p className='text-center mt-5 font-semibold'>Or register with </p>

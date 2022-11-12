@@ -1,12 +1,15 @@
 import { FacebookAuthProvider, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import React from "react";
+import React, { useState } from "react";
 import { BsFacebook, BsGoogle } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../config/firebaseConfig";
 import Loginimg from "../image/Tablet login-bro.png";
 const Login = () => {
   const navigate = useNavigate();
+  const [loader, setLoader] = useState(false);
+  const [error, setError] = useState(false);
   const handleLogin = (e) => {
+    setLoader(true)
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
@@ -16,10 +19,12 @@ const Login = () => {
         console.log("Login successfully");
         e.target.reset();
         navigate("/");
+        setLoader(false)
       })
       .catch((err) => {
         e.target.reset();
-        console.log(err.message);
+        setError(err.message);
+        setLoader(false)
       });
   };
   const handleGoogle = async() => {
@@ -32,7 +37,18 @@ const handleFacebook =async () => {
     await signInWithPopup(auth, provider);
 }
   return (
-    <div className="flex md:flex-row flex-col items-center justify-between w-4/5 mx-auto md:h-screen h-full shadow-lg p-8">
+    <div className="flex md:flex-row flex-col items-center justify-between w-full md:px-32 px-10 mx-auto md:h-screen h-full shadow-lg p-8 relative">
+      {
+        loader ? <div className="w-full h-full z-40 bg-black bg-opacity-20 absolute top-0 left-0 flex items-center justify-center">
+        <div>
+          <div className="flex items-center z-50 justify-center space-x-2">
+            <div className="w-4 h-4 rounded-full animate-pulse bg-teal-500"></div>
+            <div className="w-4 h-4 rounded-full animate-pulse bg-teal-500"></div>
+            <div className="w-4 h-4 rounded-full animate-pulse bg-teal-500"></div>
+          </div>
+        </div>
+      </div>  : ''
+      }
       <div className="w-full md:w-1/2">
         <img src={Loginimg} alt="" />
       </div>
@@ -56,6 +72,7 @@ const handleFacebook =async () => {
               required
               placeholder="Enter your password"
             />
+            <p className="font-semibold text-red-500 text-sm">{error}</p>
             <button
               type="submit"
               className="btn bg-teal-500 border-none p-3 text-white rounded"
