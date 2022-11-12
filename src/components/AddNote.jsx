@@ -25,7 +25,7 @@ const AddNote = () => {
         const note={title, description}
 
         try {
-            fetch(`http://localhost:5000/note/${user.displayName}`, {
+            fetch(`https://mern-note-server.vercel.app/note/${user.displayName}`, {
                 method: "POST",
                 headers: {
                     "content-type": "application/json"
@@ -43,7 +43,7 @@ const AddNote = () => {
         }
     }
     useEffect(() => {
-        fetch(`http://localhost:5000/note/${user.displayName}`)
+        fetch(`https://mern-note-server.vercel.app/note/${user.displayName}`)
             .then(res => res.json())
             .then(data => {
                 setNotes(data.data)
@@ -53,7 +53,7 @@ const AddNote = () => {
     //Edit post::::::::::::::::::::::::::::::::::
 
     useEffect(() => {
-        fetch(`http://localhost:5000/note?name=${user.displayName}&id=${id}`)
+        fetch(`https://mern-note-server.vercel.app/note?name=${user.displayName}&id=${id}`)
           .then(res => res.json())
         .then(data=>setEditNote(data))
       }, [id, user.displayName, editRefres, editToggle])
@@ -65,7 +65,7 @@ const AddNote = () => {
         const note = { title, des };
   
         try {
-          fetch(`http://localhost:5000/note/${id}?name=${user.displayName}`, {
+          fetch(`https://mern-note-server.vercel.app/note/${id}?name=${user.displayName}`, {
             method: "PATCH",
             headers: {
               "content-type": "application/json"
@@ -89,7 +89,7 @@ const AddNote = () => {
 
     if (proced) {
       try {
-        fetch(`http://localhost:5000/note/${NoteId}?name=${user.displayName}`, {
+        fetch(`https://mern-note-server.vercel.app/note/${NoteId}?name=${user.displayName}`, {
           method:"DELETE"
         }).then(res => res.json())
           .then((data) => {
