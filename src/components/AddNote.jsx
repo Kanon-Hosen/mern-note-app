@@ -33,10 +33,11 @@ const AddNote = () => {
                 body: JSON.stringify(note)
             }).then(res => res.json())
                 .then(data => {
-                    e.target.reset();
                     setToggle(false)
                     
-                    setRefres(true)
+                  setRefres(true)
+                  e.target.reset();
+                  
             })
         } catch (error) {
             console.log(error.message)
@@ -48,7 +49,7 @@ const AddNote = () => {
             .then(data => {
                 setNotes(data.data)
             })
-    }, [user ,id, refres, editRefres])
+    }, [user.displayName ,id, refres, editRefres])
 
     //Edit post::::::::::::::::::::::::::::::::::
 
@@ -60,9 +61,10 @@ const AddNote = () => {
     const handleNoteEdit = (e) => {
         e.preventDefault();
         const title = e.target.title.value;
-        const des = e.target.des.value;
+        const des = e.target.description.value;
+        console.log("🚀 ~ file: AddNote.jsx ~ line 65 ~ handleNoteEdit ~ des", des)
   
-        const note = { title, des };
+        const note = { title:title, description:des };
   
         try {
           fetch(`https://mern-note-server.vercel.app/note/${id}?name=${user.displayName}`, {
@@ -72,10 +74,11 @@ const AddNote = () => {
             },
             body: JSON.stringify(note)
           }).then(() => {
-             e.target.reset()
               setEditToggle(!editToggle)
               setEditRefres(!editRefres)
-              navigate('/')
+            navigate('/')
+            e.target.reset()
+            
           })
         } catch (error) {
           console.log(error.message)
@@ -166,9 +169,9 @@ const AddNote = () => {
                   <div className='w-full h-full'>
                       <form onSubmit={handleNoteEdit} className="flex flex-col gap-2 w-full h-full">
                           <label htmlFor="title" >Note title</label>
-                          <input name='title' defaultValue={editNote.title} className='p-3 border-2 rounded-md mb-3' type="text" placeholder="Title" required/>
+                          <input name='title' defaultValue={editNote?.title} className='p-3 border-2 rounded-md mb-3' type="text" placeholder="Title" required/>
                           <label htmlFor="description">Note description</label>
-                          <textarea name='des' defaultValue={editNote.description} className='p-3 border-2 rounded-md resize-none' 
+                          <textarea name='description' defaultValue={editNote?.description} className='p-3 border-2 rounded-md resize-none' 
                           type="text" placeholder="Description" required/>
                           <button className="mt-4 px-4 py-3 bg-teal-500 rounded-md text-white" type="submit">Edit note</button>
                       </form>

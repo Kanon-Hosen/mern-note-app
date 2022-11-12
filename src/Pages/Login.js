@@ -30,11 +30,13 @@ const Login = () => {
   const handleGoogle = async() => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
+    navigate('/')
 }
 
 const handleFacebook =async () => {
     const provider = new FacebookAuthProvider();
-    await signInWithPopup(auth, provider);
+  await signInWithPopup(auth, provider);
+  navigate('/')
 }
   return (
     <div className="flex md:flex-row flex-col items-center justify-between w-full md:px-32 px-10 mx-auto md:h-screen h-full shadow-lg p-8 relative">
